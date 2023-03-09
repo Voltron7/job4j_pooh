@@ -26,4 +26,29 @@ class TopicServiceTest {
         assertThat(result1.text()).isEqualTo("temperature=18");
         assertThat(result2.text()).isEqualTo("");
     }
+
+    @Test
+    public void whenTopicHasManyParamsForPublishers() {
+        TopicService topicService = new TopicService();
+        String paramForPublisher1 = "temperature=18";
+        String paramForPublisher2 = "temperature=19";
+        String paramForSubscriber1 = "client407";
+        topicService.process(
+                new Req("GET", "topic", "weather", paramForSubscriber1)
+        );
+        topicService.process(
+                new Req("POST", "topic", "weather", paramForPublisher1)
+        );
+        topicService.process(
+                new Req("POST", "topic", "weather", paramForPublisher2)
+        );
+        Resp result1 = topicService.process(
+                new Req("GET", "topic", "weather", paramForSubscriber1)
+        );
+        Resp result2 = topicService.process(
+                new Req("GET", "topic", "weather", paramForSubscriber1)
+        );
+        assertThat(result1.text()).isEqualTo(paramForPublisher1);
+        assertThat(result2.text()).isEqualTo(paramForPublisher2);
+    }
 }

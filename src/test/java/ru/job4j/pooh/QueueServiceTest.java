@@ -16,5 +16,6 @@ class QueueServiceTest {
                 new Req("GET", "queue", "weather", null)
         );
         assertThat(result.text()).isEqualTo("temperature=18");
+        assertThat(result.status()).isEqualTo("200");
     }
 }

@@ -14,17 +14,17 @@ public class Req {
     }
 
     public static Req of(String content) {
-        String[] line = content.split("\\n");
+        String[] line = content.split(System.lineSeparator());
         String[] requestArray = line[0].split(" ");
         String httpRequestType = requestArray[0];
         String[] modeAndSourceAndParam = requestArray[1].split("/");
         String poohMode = modeAndSourceAndParam[1];
         String sourceName = modeAndSourceAndParam[2];
         String param;
-        if (modeAndSourceAndParam.length == 4) {
-            param = modeAndSourceAndParam[3];
+        if ("GET".equals(httpRequestType)) {
+            param = modeAndSourceAndParam.length == 4 ? modeAndSourceAndParam[3] : "";
         } else {
-            param = line[line.length - 1].trim();
+            param = line[line.length - 1];
         }
         return new Req(httpRequestType, poohMode, sourceName, param);
     }
