@@ -10,7 +10,9 @@ public class TopicService implements Service {
     @Override
     public Resp process(Req req) {
         String text = "";
-        String status = "404";
+        String status = "";
+        final String NOT_FOUND = "404";
+        final String SUCCESSFUL_REQUEST = "200";
         if ("POST".equals(req.httpRequestType())) {
             ConcurrentHashMap<String, ConcurrentLinkedQueue<String>> subscribersQueue = topics.get(req.getSourceName());
             if (subscribersQueue.equals(topics.get(req.getSourceName()))) {
@@ -23,7 +25,7 @@ public class TopicService implements Service {
             ConcurrentHashMap<String, ConcurrentLinkedQueue<String>> subscribersQueue = topics.get(req.getSourceName());
             if (subscribersQueue.get(req.getParam()) != null) {
                 text = subscribersQueue.get(req.getParam()).poll();
-                status = "".equals(text) ? status : "200";
+                status = "".equals(text) ? NOT_FOUND : SUCCESSFUL_REQUEST;
             }
             subscribersQueue.putIfAbsent(req.getParam(), new ConcurrentLinkedQueue<>());
         }

@@ -18,4 +18,13 @@ class QueueServiceTest {
         assertThat(result.text()).isEqualTo("temperature=18");
         assertThat(result.status()).isEqualTo("200");
     }
+
+    @Test
+    public void whenGetQueueIsNull() {
+        QueueService queueService = new QueueService();
+        Resp result = queueService.process(
+                new Req("GET", "queue", "weather", null)
+        );
+        assertThat(result.text()).isNull();
+    }
 }
