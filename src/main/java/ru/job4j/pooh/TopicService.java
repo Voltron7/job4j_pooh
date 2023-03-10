@@ -6,13 +6,13 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class TopicService implements Service {
     private final ConcurrentHashMap<String, ConcurrentHashMap<String, ConcurrentLinkedQueue<String>>> topics =
             new ConcurrentHashMap<>();
+    private static final String NOT_FOUND = "404";
+    private static final String SUCCESSFUL_REQUEST = "200";
 
     @Override
     public Resp process(Req req) {
         String text = "";
         String status = "";
-        final String NOT_FOUND = "404";
-        final String SUCCESSFUL_REQUEST = "200";
         if ("POST".equals(req.httpRequestType())) {
             ConcurrentHashMap<String, ConcurrentLinkedQueue<String>> subscribersQueue = topics.get(req.getSourceName());
             if (subscribersQueue.equals(topics.get(req.getSourceName()))) {
@@ -25,7 +25,7 @@ public class TopicService implements Service {
             ConcurrentHashMap<String, ConcurrentLinkedQueue<String>> subscribersQueue = topics.get(req.getSourceName());
             if (subscribersQueue.get(req.getParam()) != null) {
                 text = subscribersQueue.get(req.getParam()).poll();
-                status = "".equals(text) ? NOT_FOUND : SUCCESSFUL_REQUEST;
+                status = text == null ? NOT_FOUND : SUCCESSFUL_REQUEST;
             }
             subscribersQueue.putIfAbsent(req.getParam(), new ConcurrentLinkedQueue<>());
         }
